@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TA Assistance Tracker</title>
+</head>
+<body>
+  
+
+  <form id="assistanceForm">
+    <label for="entryInput">Entry:</label>
+    <input type="text" id="entryInput" placeholder="">
+    <br><br>
+    <button type="button" id="addEntryButton">Add Entry</button>
+    <button type="button" id="summaryButton">Summary</button>
+  </form>
+
+  <h3>Entries</h3>
+  <ul id="entriesList"></ul>
+
+  <h3>Summary</h3>
+  <ul id="summaryList"></ul>
+
+  <script>
+    // Track entries
+    const entries = [];
+
+    // Add entry
+    function addEntry() {
+      const entryInput = document.getElementById('entryInput').value.trim();
+      if (entryInput === '') {
+        alert('Invalid entry');
+        return;
+      }
+
+      const [directoryId, description, duration] = entryInput.split(',').map((value) => value.trim());
+
+      if (!directoryId || !description || !duration) {
+        alert('Invalid entry');
+        return;
+      }
+
+      const entry = {
+        directoryId,
+        description,
+        duration: parseInt(duration),
+      };
+
+      entries.push(entry);
+
+      document.getElementById('entryInput').value = '';
+
+      updateEntriesList();
+    }
+
+    // Update entries list
+    function updateEntriesList() {
+      const entriesList = document.getElementById('entriesList');
+      entriesList.innerHTML = '';
+
+      entries.forEach((entry) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${entry.directoryId} ${entry.description} ${entry.duration}`;
+        entriesList.appendChild(listItem);
+      });
+    }
+
+    // Show summary
+    function summary() {
+      const summaryList = document.getElementById('summaryList');
+      summaryList.innerHTML = '';
+
+      const sortedEntries = entries.slice().sort((a, b) => b.duration - a.duration);
+
+      const summaryItem = document.createElement('li');
+      summaryItem.textContent = `Total Entries: ${entries.length}`;
+      summaryList.appendChild(summaryItem);
+
+      sortedEntries.forEach((entry) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${entry.directoryId} ${entry.description} ${entry.duration}`;
+        summaryList.appendChild(listItem);
+      });
+    }
+
+    // Add event listeners
+    document.getElementById('addEntryButton').addEventListener('click', addEntry);
+    document.getElementById('summaryButton').addEventListener('click', summary);
+  </script>
+</body>
+</html>
